@@ -111,10 +111,10 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         if(openConnection()){
             try{
                 PreparedStatement stmt = null;
+                stmt = conn.prepareStatement("INSERT INTO simple_meeting" +
+                        "(s_date, e_date, day_of_week) VALUES (?::date, ?::date, ?);");
+                conn.setAutoCommit(false);
                 for(SimpleMeeting m : meetings){
-                    System.out.println("Calling prepare Statement");
-                    stmt = conn.prepareStatement("INSERT INTO simple_meeting" +
-                            "(s_date, e_date, day_of_week) VALUES (?::date, ?::date, ?);");
                     stmt.setString(1,m.getStartDate());
                     stmt.setString(2,m.getEndDate());
                     stmt.setString(3,m.getDayOfWeek());
@@ -124,6 +124,7 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
                     affectedRows = stmt.executeBatch();
                     stmt.clearBatch();
                 }
+                conn.commit();
 
             }catch(SQLException e){
                 e.printStackTrace();
