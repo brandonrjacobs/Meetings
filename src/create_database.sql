@@ -27,52 +27,6 @@ CREATE TABLE meeting_user(
   name VARCHAR(50)
 );
 
-CREATE TABLE meeting(
-  id SERIAL NOT NULL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  description VARCHAR(255),
-  s_date DATE NOT NULL DEFAULT current_date,
-  e_date DATE,
-  s_time TIMESTAMP NOT NULL,
-  e_time TIMESTAMP NOT NULL,
-  is_full_day BOOLEAN DEFAULT FALSE,
-  is_recurring BOOLEAN DEFAULT FALSE,
-  parent_id INT,
-  created_by_id INT NOT NULL REFERENCES user(id),
-  created_date DATE NOT NULL DEFAULT current_date
-);
-
-CREATE TABLE recurrance_type (
-  id SERIAL NOT NULL PRIMARY KEY,
-  recurrance_type VARCHAR(20)
-);
-
-CREATE TABLE recurrance_pattern (
-  meeting_id INT NOT NULL REFERENCES meeting(id),
-  recurrance_type_id INT NOT NULL REFERENCES recurrance_type(id),
-  separation_count INT,
-  max_num_occurances INT,
-  day_of_week INT,
-  week_of_month INT,
-  day_of_month INT,
-  month_of_year INT,
-  PRIMARY KEY(meeting_id)
-);
-
-CREATE TABLE meeting_exception (
-  id INT NOT NULL PRIMARY KEY,
-  meeting_id INT NOT NULL REFERENCES meeting(id),
-  is_rescheduled BOOLEAN,
-  is_cancelled BOOLEAN,
-  s_date DATE NOT NULL,
-  e_date DATE NOT NULL,
-  s_time TIMESTAMP,
-  e_time TIMESTAMP,
-  is_full_day BOOLEAN DEFAULT FALSE,
-  created_by_id INT NOT NULL,
-  created_date DATE NOT NULL DEFAULT current_date
-);
-
 /* http://stackoverflow.com/questions/5030546/how-to-gt-the-count-of-current-month-sundays-in-psql */
 
 CREATE TABLE calendar
@@ -149,3 +103,54 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+/*
+@TODO: These are the models for a fuller and more robust meeting application handling dates and times.
+ */
+
+CREATE TABLE meeting(
+  id SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255),
+  s_date DATE NOT NULL DEFAULT current_date,
+  e_date DATE,
+  s_time TIMESTAMP NOT NULL,
+  e_time TIMESTAMP NOT NULL,
+  is_full_day BOOLEAN DEFAULT FALSE,
+  is_recurring BOOLEAN DEFAULT FALSE,
+  parent_id INT,
+  created_by_id INT NOT NULL REFERENCES user(id),
+  created_date DATE NOT NULL DEFAULT current_date
+);
+
+CREATE TABLE recurrance_type (
+  id SERIAL NOT NULL PRIMARY KEY,
+  recurrance_type VARCHAR(20)
+);
+
+CREATE TABLE recurrance_pattern (
+  meeting_id INT NOT NULL REFERENCES meeting(id),
+  recurrance_type_id INT NOT NULL REFERENCES recurrance_type(id),
+  separation_count INT,
+  max_num_occurances INT,
+  day_of_week INT,
+  week_of_month INT,
+  day_of_month INT,
+  month_of_year INT,
+  PRIMARY KEY(meeting_id)
+);
+
+CREATE TABLE meeting_exception (
+  id INT NOT NULL PRIMARY KEY,
+  meeting_id INT NOT NULL REFERENCES meeting(id),
+  is_rescheduled BOOLEAN,
+  is_cancelled BOOLEAN,
+  s_date DATE NOT NULL,
+  e_date DATE NOT NULL,
+  s_time TIMESTAMP,
+  e_time TIMESTAMP,
+  is_full_day BOOLEAN DEFAULT FALSE,
+  created_by_id INT NOT NULL,
+  created_date DATE NOT NULL DEFAULT current_date
+);
