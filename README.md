@@ -249,4 +249,8 @@ This means that I need to produce the same output based on the same exceptions a
 What this project lacks is a formal and standard exception standard. Implementing a logger that outputs everything to a file
 will be tremendesly helpful when dealing with database queries and insertions/deletions in the future. 
 
+### Multithreading and multiple user access
+Currently the database access is not suited for multi threading and having multiple users commit at the same time. 
+I will need to implement batch calls with JDBC in order to ensure that commit's do not overwrite each other and there 
+are not issues when a user calles a DAO method to either Create, Update, Read, or Delete an object. 
 
