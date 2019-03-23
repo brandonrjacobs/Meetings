@@ -7,7 +7,6 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class CSVParser {
 
@@ -49,56 +48,4 @@ public class CSVParser {
 
         return meetings;
     }
-
-    public static List<String> parseLine(Reader r) throws Exception{
-        int ch = r.read();
-        while(ch == '\r'){
-            ch = r.read();
-        }
-
-        if(ch < 0)
-            return null;
-
-        Vector<String> store = new Vector<String>();
-        StringBuffer currentValue = new StringBuffer();
-        boolean inquotes = false;
-        boolean started = false;
-        while(ch>=0){
-            if(inquotes) {
-                started=true;
-                if(ch=='\"'){
-                    inquotes = false;
-                }
-                else{
-                    currentValue.append((char)ch);
-                }
-            }
-            else{
-                if(ch == '\"'){
-                    inquotes = true;
-                    if(started){
-                        currentValue.append('\"');
-                    }
-                }
-                else if(ch==','){
-                    store.add(currentValue.toString());
-                    currentValue = new StringBuffer();
-                    started = false;
-                }
-                else if(ch == '\r'){
-
-                }
-                else if(ch=='\n'){
-                    break;
-                }
-                else{
-                    currentValue.append((char)ch);
-                }
-            }
-            ch = r.read();
-        }
-        store.add(currentValue.toString());
-        return store;
-    }
-
 }
