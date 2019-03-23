@@ -100,6 +100,7 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         }
         return 0;
     }
+
     @Override
     public int[] insertMeetingList(List<SimpleMeeting> meetings){
 
@@ -134,6 +135,8 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         }
         return affectedRows;
     }
+
+
 
     //@TODO: create better primary key for a meeting. meeting id isn't known to the user so
     //@TODO: having them ask for a meeting needs to be done via multiple variables or just the day of week.
@@ -172,6 +175,8 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return meeting;
     }
 
+
+    //@TODO: Implement exceptions to meetings that get rescheduled. Will need another method or query to append.
     @Override
     public int getMeetingCount(String day){
         int totalCount=0;
@@ -195,6 +200,8 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         }
         return totalCount;
     }
+
+
 
     //@TODO: Implement method which creates a new meeting row in the DB, It also updates the previous meeting's
     //@TODO: end date to the day you start the new meeting. We ensure we don't double count meeting days.
@@ -242,13 +249,29 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return updatedRow;
     }
 
+
+    //@TODO: update values of a meeting date by closing off the end date as current_date, and inserting a new meeting.
     @Override
     public int updateMeetingDates(int id, String new_start, String new_end) {
         return 0;
     }
 
+    //@TODO: Provide universal delete method with ways to access the delete other than meeting ID.
     @Override
     public int deleteMeeting(int id) {
+        if(openConnection()){
+            try{
+                PreparedStatement stmt = conn.prepareStatement("DELETE from simple_meeting where id = ?;");
+                stmt.setInt(1,id);
+                int affectedRow = stmt.executeUpdate();
+                if(affectedRow > 0)
+                    return affectedRow;
+
+            }catch(SQLException e){
+                System.out.println("Error deleting Meeting, did not access the database");
+            }
+            closeConnection();
+        }
         return 0;
     }
 
@@ -282,6 +305,7 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         }
         return output;
     }
+
 
     public void updateMeetingHashes(){
         this.uniqueMeetings = getAllMeetingHashes();
