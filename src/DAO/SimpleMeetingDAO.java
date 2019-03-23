@@ -6,9 +6,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.HashSet;
 import java.util.List;
+
+
 public class SimpleMeetingDAO implements ISimpleMeetingDAO{
+
     private Connection conn;
     private HashSet<String> uniqueMeetings;
 
@@ -21,7 +25,6 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         uniqueMeetings = getAllMeetingHashes();
 
     }
-
 
     private boolean openConnection(){
         conn = ConnectionFactory.getConnection();
@@ -136,10 +139,6 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return affectedRows;
     }
 
-
-
-    //@TODO: create better primary key for a meeting. meeting id isn't known to the user so
-    //@TODO: having them ask for a meeting needs to be done via multiple variables or just the day of week.
     @Override
     public SimpleMeeting getMeeting(int id) {
 
@@ -175,11 +174,12 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return meeting;
     }
 
-
     //@TODO: Implement exceptions to meetings that get rescheduled. Will need another method or query to append.
     @Override
     public int getMeetingCount(String day){
+
         int totalCount=0;
+
         if(openConnection()) {
             try {
                 PreparedStatement stmt = conn.prepareStatement("select count(*), simple_meeting.day_of_week from simple_meeting inner join calendar on\n" +
@@ -190,10 +190,15 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
                 stmt.setString(1, day);
                 stmt.setString(2, day);
                 ResultSet rs = stmt.executeQuery();
+
                 while (rs.next()) {
+
                     totalCount = rs.getInt(1);
+
                 }
+
                 closeConnection();
+
             } catch (SQLException e) {
                 //Insert log info and print statement
             }
@@ -201,17 +206,13 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return totalCount;
     }
 
-
-
     //@TODO: Implement method which creates a new meeting row in the DB, It also updates the previous meeting's
     //@TODO: end date to the day you start the new meeting. We ensure we don't double count meeting days.
     @Override
     public int updateMeetingDay(String s_date, String e_date, String oDay, String nDay) {
 
         int updatedRow = 0;
-        String originalEndDate = e_date;
-        String originalDay = oDay;
-        String newDay = nDay;
+
 
         if(openConnection()){
             try {
@@ -222,7 +223,8 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
                 originalMeeting.setString(3, oDay);
 
                 ResultSet rs = originalMeeting.executeQuery();
-                int idToUpdate=0;
+                int idToUpdate=0
+                        ;
                 while(rs.next()){
                     idToUpdate = rs.getInt(1);
                 }
@@ -234,9 +236,12 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
 
                 PreparedStatement updatedMeeting = conn.prepareStatement("INSERT INTO " +
                         "simple_meeting(s_date, e_date, day_of_week) VALUES(current_date + interval '1 day', ?::date, ?);");
-                updatedMeeting.setString(1,originalEndDate);
-                updatedMeeting.setString(2,newDay);
+
+                updatedMeeting.setString(1,e_date);
+                updatedMeeting.setString(2,nDay);
+
                 updatedRow += updatedMeeting.executeUpdate();
+
                 if(updatedRow > 0){
                     System.out.println("Updated " + updatedRow + " Rows of Simple_Meeting");
                 }
@@ -256,21 +261,24 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
         return 0;
     }
 
-    //@TODO: Provide universal delete method with ways to access the delete other than meeting ID.
+
+    //@TODO: Prevent non delete issues with dependency on simple_meeting_exception, check that table first.
     @Override
     public int deleteMeeting(int id) {
         if(openConnection()){
             try{
                 PreparedStatement stmt = conn.prepareStatement("DELETE from simple_meeting where id = ?;");
                 stmt.setInt(1,id);
+
                 int affectedRow = stmt.executeUpdate();
+
                 if(affectedRow > 0)
                     return affectedRow;
 
+                closeConnection();
             }catch(SQLException e){
                 System.out.println("Error deleting Meeting, did not access the database");
             }
-            closeConnection();
         }
         return 0;
     }
@@ -284,15 +292,21 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
 
                 PreparedStatement prepStatement;
                 prepStatement = conn.prepareStatement("SELECT * FROM simple_meeting;");
+
                 ResultSet rs = prepStatement.executeQuery();
+
                 while (rs.next()) {
+
                     String startDate = rs.getString(2);
                     String endDate = rs.getString(3);
                     String day = rs.getString(4);
+
                     StringBuilder sb = new StringBuilder();
+
                     sb.append(startDate);
                     sb.append(endDate);
                     sb.append(day);
+
                     output.add(sb.toString());
 
                 }
@@ -307,7 +321,7 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
     }
 
 
-    public void updateMeetingHashes(){
+    private void updateMeetingHashes(){
         this.uniqueMeetings = getAllMeetingHashes();
     }
 
@@ -319,12 +333,15 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
     public boolean containsMeeting(SimpleMeeting m){
         boolean containsMeeting = false;
         StringBuilder currentMeeting = new StringBuilder();
+
         currentMeeting.append(m.getStartDate());
         currentMeeting.append(m.getEndDate());
         currentMeeting.append(m.getDayOfWeek());
+
         if(this.uniqueMeetings.contains(currentMeeting.toString())){
             containsMeeting = true;
         }
+
         return containsMeeting;
     }
 }
