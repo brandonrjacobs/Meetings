@@ -242,3 +242,11 @@ the initial planning for them was.
 ### Clean up and finalize the RESTful API
 This is a not so clean implementation of an interface but in the future should be cleaned up and abstract a lot of the
 database heavy lifting in order to be successful with use in a front end web framework. 
+
+### Standardize Exception Handling and Implement a Logger 
+Playing around with the different frameworks and possible Exceptions I need to implement a standard Exception Handling system.
+This means that I need to produce the same output based on the same exceptions and log them to a central file to debug. 
+What this project lacks is a formal and standard exception standard. Implementing a logger that outputs everything to a file
+will be tremendesly helpful when dealing with database queries and insertions/deletions in the future. 
+
+
