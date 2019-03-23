@@ -5,9 +5,9 @@ import main.parser.CSVParser;
 
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.HashMap;
 
 public class MeetingManagerStdIn {
 
@@ -28,12 +28,8 @@ public class MeetingManagerStdIn {
 
             Scanner scan = new Scanner(System.in);
 
-            Reader input = new FileReader("/raytheon/meetings.csv");
-            List<SimpleMeeting> meetings;
-            meetings = CSVParser.parseFile(input);
 
-
-            System.out.println("Current Database size of " + meetings.size() + " Meetings");
+            System.out.println("Current Database size of " + dao.getTotalEntries() + " Meetings");
             System.out.println("------------------------------------");
             System.out.println("------------------------------------");
             System.out.println("------------------------------------");
@@ -78,6 +74,7 @@ public class MeetingManagerStdIn {
                         System.out.println("Database size is: " + dao.getTotalEntries());
                         dao.insertMeeting(m);
                         System.out.println("Database size is now: " + dao.getTotalEntries() + " after Entry");
+                        continue;
 
                     case 3:
                         System.out.println("What day would you like to cancel your Meeting?");
@@ -90,10 +87,20 @@ public class MeetingManagerStdIn {
                         System.out.println("Meeting Occurances before cancelling: " + dao.getMeetingCount("Mon"));
                         dao.insertException(dateCancel, dow);
                         System.out.println("Meeting occurances after cancelling: " + dao.getMeetingCount("Mon"));
+                        continue;
 
                     case 4:
+                        System.out.println("Enter path to file: ");
+                        String path = scan.next();
+                        Reader input = new FileReader(path);
+                        List<SimpleMeeting> meetings;
+                        meetings = CSVParser.parseFile(input);
+                        dao.insertMeetingList(meetings);
+                        System.out.println("Database now has " + dao.getTotalEntries() + " Entries");
+                        continue;
 
                     case 5:
+                        System.exit(1);
 
                     default:
 
