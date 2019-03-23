@@ -1,25 +1,25 @@
 package DAO;
-import java.sql.*;
-import java.util.*;
 
-public class MeetingDAO {
-    private static final String URL = "jdbc:postgresql://localhost/meeting_application";
-
-    public MeetingDAO(){
-
-    }
-
-    public void createMeeting(Meeting m) throws SQLException{
-        String url = "jdbc:postgresql://localhost/test";
-        Properties props = new Properties();
-        props.setProperty("user","fred");
-        props.setProperty("password","secret");
-        props.setProperty("ssl","true");
-        Connection conn = DriverManager.getConnection(url, props);
-
-        url = "jdbc:postgresql://localhost/test?user=fred&password=secret&ssl=true";
-        conn = DriverManager.getConnection(url);
-    }
+//public class MeetingDAO implements IMeetingDAO {
 
 
-}
+//    public Meeting getMeeting(int id){
+//        Connection conn = ConnectionFactory.getConnection();
+//        try{
+//            PreparedStatement prepStatement;
+//            prepStatement = conn.prepareStatement("SELECT * FROM meeting where id = ?");
+//            prepStatement.setInt(1, id);
+//            ResultSet rs = prepStatement.executeQuery();
+//
+//            while(rs.next()){
+//                String startdate = rs.getString(2);
+//                String endDate = rs.getString(3);
+//                String day = rs.getString(4);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return new Meeting();
+//    }
+//}
