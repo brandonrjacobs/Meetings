@@ -135,6 +135,12 @@ select count(*), simple_meeting.day_of_week from simple_meeting inner join calen
       cal_date NOT IN (Select cal_date from calendar inner join simple_meeting_exception on
         exception_date = cal_date where day_of_week LIKE 'Sun') group by simple_meeting.day_of_week ;
 ```
+
+```sql
+select count(*) from simple_meeting inner join calendar on cal_date between simple_meeting.s_date and simple_meeting.e_date and simple_meeting.day_of_week = calendar.day_of_week where cal_date between '2019-06-01' and '2020-06-01' and simple_meeting.day_of_week = 'Mon';
+```
+The above query is used to determine all meeting date occurances for a given date range specified by the user. 
+
 As you can see, by having a calendar table that holds entries for every day of the year we can easily access date values
 and simplify the query complexity. It is possible to not have a calendar table but I made the decision to use a separate table 
 and query against in order to make the query readable and therefore easier to debug. 
