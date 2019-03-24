@@ -2,6 +2,7 @@ package stdin;
 import DAO.SimpleMeetingDAO;
 import Models.SimpleMeeting;
 import main.parser.CSVParser;
+import main.parser.SimpleMeetingValidator;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -38,7 +39,8 @@ public class MeetingManagerStdIn {
 
             while(opt != 5) {
                 System.out.println("Please Enter your option: ");
-                System.out.println("(1) Find total meetings (2) Insert Meeting (3) Add Exception (4) load csv (5) Exit");
+                System.out.println("(1) Find total meetings (2) Insert Meeting (3) Add Exception (4) load csv" +
+                        " (5) Find Meetings in date range (6) Exit");
 
                 //@TODO: Validate int input and not string characters
                 opt = scan.nextInt();
@@ -100,7 +102,25 @@ public class MeetingManagerStdIn {
                         continue;
 
                     case 5:
-                        System.exit(1);
+                        System.out.println("Enter date range to count meetings: ");
+                        System.out.println("Start Date: ");
+                        String start = scan.next();
+                        System.out.println("End Date: ");
+                        String end = scan.next();
+                        //Validate Correct date format
+                        SimpleMeetingValidator valid = new SimpleMeetingValidator();
+                        HashMap<String,Integer> output = new HashMap<String,Integer>();
+                        if(valid.validateDate(start) && valid.validateDate(end))
+                             output = dao.getMeetingsInDateRange(start,end);
+                        else
+                            System.out.println("You Entered a wrong Date format, Try Again");
+                        for(String key: output.keySet()){
+                            System.out.println(key + " Meetings: " + output.get(key).toString());
+                        }
+
+                    case 6:
+                        System.out.println("Exiting program....");
+                        System.exit(0);
 
                     default:
 

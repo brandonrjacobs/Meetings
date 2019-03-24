@@ -26,3 +26,9 @@ select count(*), simple_meeting.day_of_week from simple_meeting inner join calen
     and simple_meeting.e_date and simple_meeting.day_of_week LIKE 'Sun' and
       cal_date NOT IN (Select cal_date from calendar inner join simple_meeting_exception on
         exception_date = cal_date where day_of_week LIKE 'Sun') group by simple_meeting.day_of_week ;
+
+
+/* Query to select all meeting ocurances for a specified day between a chosen range by the user */
+select count(*) from simple_meeting inner join calendar on
+    cal_date between simple_meeting.s_date and simple_meeting.e_date and simple_meeting.day_of_week = calendar.day_of_week
+where cal_date between '2019-06-01' and '2020-06-01' and simple_meeting.day_of_week = 'Mon';
