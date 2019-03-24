@@ -228,7 +228,7 @@ or overwrite meeting date intervals. The following are the Input Restrictions cu
 #### Meetings must be a unique tuple of (Start Date, End Date, Day of Week)
 Any row in the database that has a start date inside the interval of (Start Date, End Date) and have the same Day of the Week
 will not be allowed to be stored. This is because as of right now we do not differentiate between meeting types, we assume 
-that if we store that meeting, we would be double counting the dates.
+that if we store that meeting, we would be double counting the dates. Start Dates must be before the End date of the meeting for the date range to work therefore more input validation needs to be added. This should be done prior to the database to limit the work done on the DB. 
 
 #### Design Consideration
 A simple design addition would be to assign a name to the meeting so that we can have two intervals that overlap and on the 
@@ -258,7 +258,7 @@ This means that I need to produce the same output based on the same exceptions a
 What this project lacks is a formal and standard exception standard. Implementing a logger that outputs everything to a file
 will be tremendesly helpful when dealing with database queries and insertions/deletions in the future. 
 
-### Multithreading and multiple user access
+### Multithreading/Serialization and multiple user access
 Currently the database access is not suited for multi threading and having multiple users commit at the same time. 
 I will need to implement batch calls with JDBC in order to ensure that commit's do not overwrite each other and there 
 are not issues when a user calles a DAO method to either Create, Update, Read, or Delete an object. 
