@@ -1,5 +1,8 @@
 # Meetings
 
+## Overview
+This was a fun assignment to dig back into Java and see what I could do with a short period of time. I spend roughly 12 hours on this and most of that time was just playing with what would work best for this situation and making it all come together without needing a large number of dependencies. There is a lot of room for development and a lot of questions I would have for the user to determine how to move forward since there are multiple ways to implement this. Overall I think using JDBC and postgres was a simple design choice but it became very redundent when producing queries. I think there could be a better storage method and query method.
+
 ## Design
 
 This project is a prototype for a reusable Interface to create, read, update, and delete meeting objects. The idea
