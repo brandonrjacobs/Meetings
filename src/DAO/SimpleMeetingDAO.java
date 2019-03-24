@@ -233,6 +233,27 @@ public class SimpleMeetingDAO implements ISimpleMeetingDAO{
     }
     //@TODO: Implement method which creates a new meeting row in the DB, It also updates the previous meeting's
     //@TODO: end date to the day you start the new meeting. We ensure we don't double count meeting days.
+
+    @Override
+    public int getAllPlannedMeetings(){
+        int totalPlannedMeetings=0;
+        if(openConnection()){
+            try{
+                PreparedStatement stmt = conn.prepareStatement("select count(*) from simple_meeting " +
+                        "inner join calendar on cal_date between simple_meeting.s_date and simple_meeting.e_date " +
+                        "and simple_meeting.day_of_week = calendar.day_of_week where cal_date between " +
+                        "(select min(s_date) from simple_meeting) and (select max(e_date) from simple_meeting);");
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()){
+                    totalPlannedMeetings = rs.getInt(1);
+                }
+                closeConnection();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return totalPlannedMeetings;
+    }
     @Override
     public int updateMeetingDay(String s_date, String e_date, String oDay, String nDay) {
 

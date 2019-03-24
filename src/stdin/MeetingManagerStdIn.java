@@ -47,7 +47,8 @@ public class MeetingManagerStdIn {
                 switch(opt) {
 
                     case 1:
-                        System.out.println("What day do you want the meetings for? \n Day: ");
+                        System.out.println("There are " + dao.getAllPlannedMeetings() + " Planned meetings currently");
+                        System.out.println("What day do you want to know more about? \n Day: ");
                         String day = scan.next();
 
                         String abbrev="";
